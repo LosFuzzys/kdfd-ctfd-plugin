@@ -55,19 +55,20 @@ CTFd._internal.challenge.postRender = function () {
 
         if (!connection_info_html) {
             connection_info_html = 'retrieving...';
-            setTimeout(function(){ 
-                refresh_button.trigger('click');
-             }, 1000);
+            setTimeout(function(){ refresh_button.trigger('click'); }, 1000);
+        } else {
+            // TODO overwrite old timeout
+            setTimeout(function(){ refresh_button.trigger('click'); }, 1000 * 60);
         }
 
         link_text.html(connection_info_html);
         if (expiry) {
-            expiry_date = new Date(expiry).toLocaleString();
-            timout_text.html(expiry_date);
+            expiry = Date.parse(expiry) - 1000 * 60 * new Date().getTimezoneOffset();
+            expiry_date = dayjs(expiry).fromNow();
+            timout_text.html('terminates ' + expiry_date);
         } else {
             timout_text.html('');
         }
-
     }
 
     check_challenge = function() {
