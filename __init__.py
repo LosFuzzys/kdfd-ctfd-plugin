@@ -5,6 +5,7 @@ from CTFd.plugins.challenges import CHALLENGE_CLASSES, BaseChallenge
 from CTFd.utils.decorators import admins_only, during_ctf_time_only, require_verified_emails
 from CTFd.utils.decorators.visibility import check_challenge_visibility
 from CTFd.plugins import register_plugin_assets_directory
+from CTFd.utils.plugins import register_script
 from CTFd.models import Challenges
 import requests
 import logging
@@ -40,14 +41,38 @@ def update_challenge(challenge_id):
     instance_id = user.id
     server = 'http://kdfd.139.59.214.156.nip.io'
     cookies = {'auth-token': 'ct4m099034tfsst-0tmh-thi09'}
-    res = requests.put(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}', cookies=cookies).json()
-    if not res['success']:
-        return {"success": False, "response": res}
+    if request.method == 'GET':
+        res = requests.get(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}', cookies=cookies)
+        logging.error(res.text)
+        res = res.json()
+        if not res['success']:
+            return {"success": False, "msg": "Could not retrieve instance state", "res": res}
+        if not res['instance']:
+            return {"success": True, "response": res, "active": False}
+        expiry = res["instance"]["expiry"]
+    elif request.method == 'PUT':
+        res = requests.put(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}', cookies=cookies)
+        logging.error(res.text)
+        res = res.json()
+        if not res['success']:
+            return {"success": False, "response": res}
+        expiry = res["instance"]["expiry"]
+    else: #request.method == 'DELETE':
+        res = requests.delete(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}', cookies=cookies)
+        logging.error(res.text)
+        res = res.json()
+        if not res['success']:
+            return {"success": False, "response": res}
+        return {"success": True, "active": False, "response": res}
     # TODO challenge_name = parse(challenge.comments) (parse slug from db)
     challenge_name = 'chal1'
-    res = requests.get(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}/challenge', parameters={'challenge_name': challenge_name}).json()
+    res = requests.get(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}/challenge', params={'challenge_name': challenge_name}, cookies=cookies)
+    logging.error(res.text)
+    res = res.json()
+    if not res['success']:
+        return {"success": False, "msg": "Could not retrieve challenge connection info.", "res": res}
     connection_info_html = res.get("connection_info_html", 'error')
-    return {"success": True,, "response": res, "connection_info_html": connection_info_html}
+    return {"success": True, "active": True, "response": res, "connection_info_html": connection_info_html, "expiry": expiry}
 
 
 @kdfd.route("/plugins/kdfd/<class_name>/inject.js")
@@ -70,5 +95,6 @@ def patch_challenge_classes():
 
 def load(app):
     register_plugin_assets_directory(app, base_path="/plugins/kdfd-ctfd-plugin/assets/")
+    register_script('test') # TODO set correct url
     app.register_blueprint(kdfd)
     patch_challenge_classes()
