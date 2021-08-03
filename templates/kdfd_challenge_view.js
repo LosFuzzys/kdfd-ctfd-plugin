@@ -22,6 +22,8 @@ CTFd._internal.challenge.postRender = function () {
     on_challenge_response = function(data) {
         var link = 'unknown';
         var time = 'unknown'
+        console.log('response');
+        console.log(data);
         if (data["status"] == "ok") {
             link = data["link"];
             time = data["time"];
