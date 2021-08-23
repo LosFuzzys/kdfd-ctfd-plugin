@@ -7,6 +7,7 @@ from CTFd.utils.decorators.visibility import check_challenge_visibility
 from CTFd.plugins import register_plugin_assets_directory
 from CTFd.utils.plugins import register_script
 from CTFd.models import Challenges
+from CTFd.utils.decorators import ratelimit
 import requests
 import logging
 from CTFd.utils.user import (
@@ -30,6 +31,7 @@ def admin_view():
 
 
 @kdfd.route("/api/v1/kdfd/challenge/<challenge_id>", methods=['GET', 'PUT', 'DELETE'])
+@ratelimit(method="POST", limit=5, interval=10)
 @check_challenge_visibility
 @during_ctf_time_only
 @require_verified_emails
@@ -39,7 +41,7 @@ def update_challenge(challenge_id):
     ctf_name = 'testctf'
     app_name = 'test_challenge_1i'
     instance_id = user.id
-    server = 'http://kdfd.139.59.214.156.nip.io'
+    server = 'http://kdfd.104.248.26.251.nip.io'
     cookies = {'auth-token': 'ct4m099034tfsst-0tmh-thi09'}
     if request.method == 'GET':
         res = requests.get(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}', cookies=cookies)
@@ -51,7 +53,7 @@ def update_challenge(challenge_id):
             return {"success": True, "response": res, "active": False}
         expiry = res["instance"]["expiry"]
     elif request.method == 'PUT':
-        res = requests.put(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}', cookies=cookies)
+        res = requests.put(f'{server}/api/v1/ctfs/{ctf_name}/apps/{app_name}/instances/{instance_id}', cookies=cookies, timeout=5) # TODO make configurable and handle exception
         logging.error(res.text)
         res = res.json()
         if not res['success']:
