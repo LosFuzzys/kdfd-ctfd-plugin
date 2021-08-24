@@ -12,6 +12,7 @@ CTFd._internal.challenge.postRender = function () {
     loading_info = kdfd_chal.find('.kdfd-loading');
     link_text = kdfd_chal.find('.kdfd-link');
     alert_box = kdfd_chal.find('.kdfd-alert');
+    alert_box_msg = kdfd_chal.find('.kdfd-alert-msg');
     timout_text = kdfd_chal.find('.kdfd-timeout');
 
     challenge_api = function(http_method, callback) {
@@ -28,9 +29,11 @@ CTFd._internal.challenge.postRender = function () {
         console.log(data);
         loading_info.hide();
         if (!data["success"]) {
-            alert(data);
-            alert_box.show();
-            alert_box.html(data["msg"]);
+            alert_box_msg.html(data["message"] ? data["message"] : "Unknown Error");
+            alert_box.collapse('show');
+        } else {
+            alert_box.collapse('hide');
+            alert_box_msg.html('success');
         }
         var connection_info_html = 'You have no active instance';
         var expiry = false;

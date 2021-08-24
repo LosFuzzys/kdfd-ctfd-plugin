@@ -1,0 +1,14 @@
+<div role="tabpanel" class="tab-pane config-section" id="instances">
+	<div class="w-100">
+		This feature is not done yet... <br/>
+		{% if instances %}
+		{% for instance in instances %}
+			user: {{ instance.user_name }} <br/>
+			challenge: {{ instance.challenge_name }} <br/>
+			<br/> <br/> <br/>
+		{% endfor %}
+		{% else %}
+			No instances
+		{% endif %}
+	</div>
+</div>

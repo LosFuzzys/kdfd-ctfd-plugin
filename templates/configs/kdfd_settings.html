@@ -7,14 +7,52 @@
 					Globally enable or disable the kdfd integration plugin
 				</small>
 			</label>
-			<select class="form-control custom-select" name="challenge_enabled">
-				<option value="public" {% if challenge_enabled %}selected{% endif %}>
+			<select class="form-control custom-select" name="kdfd_enabled">
+				<option value="true" {% if kdfd_enabled %}selected{% endif %}>
 					Enabled
 				</option>
-				<option value="private" {% if not challenge_enabled %}selected{% endif %}>
+				<option value="false" {% if not kdfd_enabled %}selected{% endif %}>
 					Disabled
 				</option>
 			</select>
+		</div>
+
+		<div class="form-group">
+			<label for="kdfd_ctf_name">
+				CTF Name
+				<small class="form-text text-muted">CTF name slug for use in the kdfd controller API</small>
+			</label>
+			<input class="form-control" id='kdfd_ctf_name' name='kdfd_ctf_name' type='text' placeholder="ctf_name" {% if kdfd_ctf_name is
+				defined and kdfd_ctf_name !=None %}value="{{ kdfd_ctf_name }}" {% endif %}>
+		</div>
+
+		<div class="form-group">
+			<label for="kdfd_controller_url">
+				Controller URL
+				<small class="form-text text-muted">URL for the kdfd controller endpoint</small>
+			</label>
+			<input class="form-control" id='kdfd_controller_url' name='kdfd_controller_url' type='text' placeholder="i.e. https://kdfd.your.ctf.com/" {% if
+				kdfd_controller_url is defined and kdfd_controller_url !=None %}value="{{ kdfd_controller_url }}" {% endif %}>
+		</div>
+
+		<div class="form-group">
+			<label for="kdfd_controller_timeout">
+				Controller timeout
+				<small class="form-text text-muted">Timeout when waiting for kdfd controller response (in seconds)</small>
+			</label>
+			<input class="form-control" id='kdfd_controller_timeout' name='kdfd_controller_timeout' type='text' placeholder="5"
+				{% if kdfd_controller_timeout is defined and kdfd_controller_timeout !=None %}value="{{ kdfd_controller_timeout }}" {% endif
+				%}>
+		</div>
+
+		<div class="form-group">
+			<label for="kdfd_controller_auth_token">
+				Controller Auth Token
+				<small class="form-text text-muted">Token used to authenticate to the kdfd controller</small>
+			</label>
+			<input class="form-control" id='kdfd_controller_auth_token' name='kdfd_controller_auth_token' type='text' placeholder="should be long alphanumeric string"
+				{% if kdfd_controller_auth_token is defined and kdfd_controller_auth_token !=None
+				%}value="{{ kdfd_controller_auth_token }}" {% endif %}>
 		</div>
 
 		<button type="submit" class="btn btn-md btn-primary float-right">Update</button>

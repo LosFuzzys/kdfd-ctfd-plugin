@@ -1,1 +1,0 @@
-alert('kdfd-view'); // TODO remove

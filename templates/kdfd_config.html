@@ -7,7 +7,7 @@
 {% block content %}
 <div class="jumbotron">
 	<div class="container">
-		<h1>kdfd Configuration</h1>
+		<h1>kdfd-ctfd-plugin</h1>
 	</div>
 </div>
 <div class="container">
@@ -16,6 +16,7 @@
 			<ul class="nav nav-pills flex-column">
 				<li class="nav-item">
 					<a class="nav-link rounded-0" href="#settings" role="tab" data-toggle="tab">Settings</a>
+					<a class="nav-link rounded-0" href="#instances" role="tab" data-toggle="tab">Active Instances</a>
 				</li>
 			</ul>
 		</div>
@@ -32,6 +33,7 @@
 
 			<div class="tab-content">
 				{% include "configs/kdfd_settings.html" %}
+				{% include "configs/kdfd_instances.html" %}
 			</div>
 		</div>
 	</div>
@@ -42,5 +44,6 @@
 {% endblock %}
 
 {% block entrypoint %}
-	{#<script defer src="{{ url_for('views.themes', theme='admin', path='js/pages/configs.js') }}"></script>#}
+    {# <script defer src="{{ url_for('views.themes', theme='admin', path='js/pages/configs.js') }}"></script> #}
+	<script defer src="/plugins/kdfd-ctfd-plugin/static/kdfd_configs.min.js"></script>
 {% endblock %}
