@@ -15,15 +15,18 @@ CTFd._internal.challenge.postRender = function () {
     alert_box_msg = kdfd_chal.find('.kdfd-alert-msg');
     timout_text = kdfd_chal.find('.kdfd-timeout');
 
-    challenge_api = function(http_method, callback) {
+    // challenge_value = $('.challenge-value');
+    // challenge_value.after('<p class="text-center">Status: alive?</p>');
+
+    challenge_api = function (http_method, callback) {
         CTFd.fetch("/api/v1/kdfd/challenge/" + CTFd._internal.challenge.data.id, {
             method: http_method
-          })
-        .then(response => response.json())
-        .then(callback);
+        })
+            .then(response => response.json())
+            .then(callback);
     }
 
-    on_challenge_response = function(data) {
+    on_challenge_response = function (data) {
         // TODO remove debug
         console.log('response');
         console.log(data);
@@ -58,10 +61,10 @@ CTFd._internal.challenge.postRender = function () {
 
         if (!connection_info_html) {
             connection_info_html = 'retrieving...';
-            setTimeout(function(){ refresh_button.trigger('click'); }, 1000);
+            setTimeout(function () { refresh_button.trigger('click'); }, 1000);
         } else {
             // TODO overwrite old timeout
-            setTimeout(function(){ refresh_button.trigger('click'); }, 1000 * 60);
+            setTimeout(function () { refresh_button.trigger('click'); }, 1000 * 60);
         }
 
         link_text.html(connection_info_html);
@@ -74,31 +77,31 @@ CTFd._internal.challenge.postRender = function () {
         }
     }
 
-    check_challenge = function() {
+    check_challenge = function () {
         challenge_api('GET', on_challenge_response);
     }
 
-    create_challenge = function() {
+    create_challenge = function () {
         challenge_api('PUT', on_challenge_response);
     }
 
-    destroy_challenge = function() {
+    destroy_challenge = function () {
         challenge_api('DELETE', data =>
             console.log(data)
         );
     }
 
-    create_button.click(function() {
+    create_button.click(function () {
         loading_info.show();
         create_button.attr('disabled', "");
         create_challenge();
     });
-    destroy_button.click(function() {
+    destroy_button.click(function () {
         loading_info.show();
         destroy_button.attr('disabled', "");
         destroy_challenge();
     });
-    refresh_button.click(function() {
+    refresh_button.click(function () {
         loading_info.show();
         refresh_button.attr('disabled', "");
         check_challenge();
